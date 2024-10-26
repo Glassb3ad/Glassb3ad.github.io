@@ -1,19 +1,29 @@
+let cachedData
 // Function to fetch and process data from 'data.json'
 async function fetchData() {
+  if (cachedData) {
+    return cachedData
+  }
   try {
     const response = await fetch('data.json');
     const data = await response.json();
+    cachedData = data
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 }
 
+let cachedConstants
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
+  if (cachedConstants) {
+    return cachedConstants
+  }
   try {
     const response = await fetch('constants.json');
     const data = await response.json();
+    cachedConstants = data
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
