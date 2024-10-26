@@ -112,18 +112,24 @@ async function findRecommendations(potVolume, potType, plantType, season) {
   if (!data) return;
 
   let similarCount = 0
+
+  let similarwaterCount = 0
+  let similarwaterGrowthSum = 0
+  let similarwaterYieldSum = 0
+
+  let lesswaterCount = 0
+  let lesswaterGrowthSum = 0
+  let lesswaterYieldSum = 0
+
+  let morewaterCount = 0
+  let morewaterGrowthSum = 0
+  let morewaterYieldSum = 0
+
   for (let i = 0; i < data.length; i++) {
     if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
       && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)) {
       similarCount = similarCount + 1
     }
-  }
-  document.getElementById('similar').textContent = similarCount;
-
-  let similarwaterCount = 0
-  let similarwaterGrowthSum = 0
-  let similarwaterYieldSum = 0
-  for (let i = 0; i < data.length; i++) {
     if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
       && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
       && data[i].actual_water > (data[i].recommented_water * 0.9) && data[i].actual_water > (data[i].recommented_water * 1.1)) {
@@ -131,15 +137,7 @@ async function findRecommendations(potVolume, potType, plantType, season) {
       similarwaterGrowthSum = similarwaterGrowthSum + data[i].growth_rate
       similarwaterYieldSum = similarwaterYieldSum + data[i].crop_yield
     }
-  }
-  document.getElementById('similarwaterCount').textContent = similarwaterCount;
-  document.getElementById('similarwaterGrowthAverage').textContent = similarwaterCount ? (similarwaterGrowthSum / similarwaterCount).toFixed(1) : "-";
-  document.getElementById('similarwaterYieldAverage').textContent = similarwaterCount ? (similarwaterYieldSum / similarwaterCount).toFixed(1) : "-";
 
-  let lesswaterCount = 0
-  let lesswaterGrowthSum = 0
-  let lesswaterYieldSum = 0
-  for (let i = 0; i < data.length; i++) {
     if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
       && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
       && data[i].actual_water <= (data[i].recommented_water * 0.9)) {
@@ -147,15 +145,7 @@ async function findRecommendations(potVolume, potType, plantType, season) {
       lesswaterGrowthSum = lesswaterGrowthSum + data[i].growth_rate
       lesswaterYieldSum = lesswaterYieldSum + data[i].crop_yield
     }
-  }
-  document.getElementById('lesswaterCount').textContent = lesswaterCount;
-  document.getElementById('lesswaterGrowthAverage').textContent = lesswaterCount ? (lesswaterGrowthSum / lesswaterCount).toFixed(1) : "-";
-  document.getElementById('lesswaterYieldAverage').textContent = lesswaterCount ? (lesswaterYieldSum / lesswaterCount).toFixed(1) : "-";
 
-  let morewaterCount = 0
-  let morewaterGrowthSum = 0
-  let morewaterYieldSum = 0
-  for (let i = 0; i < data.length; i++) {
     if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
       && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
       && data[i].actual_water >= (data[i].recommented_water * 1.1)) {
@@ -164,6 +154,16 @@ async function findRecommendations(potVolume, potType, plantType, season) {
       morewaterYieldSum = morewaterYieldSum + data[i].crop_yield
     }
   }
+  document.getElementById('similar').textContent = similarCount;
+
+  document.getElementById('similarwaterCount').textContent = similarwaterCount;
+  document.getElementById('similarwaterGrowthAverage').textContent = similarwaterCount ? (similarwaterGrowthSum / similarwaterCount).toFixed(1) : "-";
+  document.getElementById('similarwaterYieldAverage').textContent = similarwaterCount ? (similarwaterYieldSum / similarwaterCount).toFixed(1) : "-";
+
+  document.getElementById('lesswaterCount').textContent = lesswaterCount;
+  document.getElementById('lesswaterGrowthAverage').textContent = lesswaterCount ? (lesswaterGrowthSum / lesswaterCount).toFixed(1) : "-";
+  document.getElementById('lesswaterYieldAverage').textContent = lesswaterCount ? (lesswaterYieldSum / lesswaterCount).toFixed(1) : "-";
+
   document.getElementById('morewaterCount').textContent = morewaterCount;
   document.getElementById('morewaterGrowthAverage').textContent = morewaterCount ? (morewaterGrowthSum / morewaterCount).toFixed(1) : "-";
   document.getElementById('morewaterYieldAverage').textContent = morewaterCount ? (morewaterYieldSum / morewaterCount).toFixed(1) : "-";
