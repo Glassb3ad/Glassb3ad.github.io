@@ -14,8 +14,6 @@ async function fetchData() {
   }
 }
 
-let cachedConstants
-
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
   const cachedData = JSON.parse(localStorage.getItem("constants"));
