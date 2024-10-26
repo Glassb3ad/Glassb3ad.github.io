@@ -140,29 +140,24 @@ async function findRecommendations(potVolume, potType, plantType, season) {
     if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
       && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)) {
       similarCount = similarCount + 1
-    }
-    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
-      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
-      && data[i].actual_water > (data[i].recommented_water * 0.9) && data[i].actual_water > (data[i].recommented_water * 1.1)) {
-      similarwaterCount = similarwaterCount + 1
-      similarwaterGrowthSum = similarwaterGrowthSum + data[i].growth_rate
-      similarwaterYieldSum = similarwaterYieldSum + data[i].crop_yield
-    }
 
-    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
-      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
-      && data[i].actual_water <= (data[i].recommented_water * 0.9)) {
-      lesswaterCount = lesswaterCount + 1
-      lesswaterGrowthSum = lesswaterGrowthSum + data[i].growth_rate
-      lesswaterYieldSum = lesswaterYieldSum + data[i].crop_yield
-    }
+      if (data[i].actual_water > (data[i].recommented_water * 0.9) && data[i].actual_water > (data[i].recommented_water * 1.1)) {
+        similarwaterCount = similarwaterCount + 1
+        similarwaterGrowthSum = similarwaterGrowthSum + data[i].growth_rate
+        similarwaterYieldSum = similarwaterYieldSum + data[i].crop_yield
+      }
 
-    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
-      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
-      && data[i].actual_water >= (data[i].recommented_water * 1.1)) {
-      morewaterCount = morewaterCount + 1
-      morewaterGrowthSum = morewaterGrowthSum + data[i].growth_rate
-      morewaterYieldSum = morewaterYieldSum + data[i].crop_yield
+      if (data[i].actual_water <= (data[i].recommented_water * 0.9)) {
+        lesswaterCount = lesswaterCount + 1
+        lesswaterGrowthSum = lesswaterGrowthSum + data[i].growth_rate
+        lesswaterYieldSum = lesswaterYieldSum + data[i].crop_yield
+      }
+
+      if (data[i].actual_water >= (data[i].recommented_water * 1.1)) {
+        morewaterCount = morewaterCount + 1
+        morewaterGrowthSum = morewaterGrowthSum + data[i].growth_rate
+        morewaterYieldSum = morewaterYieldSum + data[i].crop_yield
+      }
     }
   }
   document.getElementById('similar').textContent = similarCount;
