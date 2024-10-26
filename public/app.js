@@ -20,7 +20,6 @@ async function fetchConstants() {
   if (cachedData) {
     return cachedData
   }
-  console.log({ cachedData })
   try {
     const response = await fetch('constants.json');
     const data = await response.json();
