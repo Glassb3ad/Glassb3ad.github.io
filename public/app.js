@@ -17,6 +17,7 @@ async function fetchData() {
 let cachedConstants
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
+  console.log({ cachedConstants })
   if (cachedConstants) {
     return cachedConstants
   }
