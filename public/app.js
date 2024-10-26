@@ -1,22 +1,22 @@
 // Function to fetch and process data from 'data.json'
 async function fetchData() {
   try {
-      const response = await fetch('data.json');
-      const data = await response.json();
-      return data;
+    const response = await fetch('data.json');
+    const data = await response.json();
+    return data;
   } catch (error) {
-      console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error);
   }
 }
 
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
   try {
-      const response = await fetch('constants.json');
-      const data = await response.json();
-      return data;
+    const response = await fetch('constants.json');
+    const data = await response.json();
+    return data;
   } catch (error) {
-      console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error);
   }
 }
 
@@ -27,7 +27,7 @@ async function populatePottype() {
 
   const dropdown = document.getElementById("potType");
   for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "pot") {
+    if (data[i].datatype === "pot") {
       var option = document.createElement("option");
       option.text = data[i].name;
       option.value = data[i].name;
@@ -43,7 +43,7 @@ async function populatePlantType() {
 
   const dropdown = document.getElementById("plantType");
   for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "species") {
+    if (data[i].datatype === "species") {
       var option = document.createElement("option");
       option.text = data[i].name;
       option.value = data[i].name;
@@ -59,7 +59,7 @@ async function populateSeason() {
 
   const dropdown = document.getElementById("season");
   for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "season") {
+    if (data[i].datatype === "season") {
       var option = document.createElement("option");
       option.text = data[i].name;
       option.value = data[i].name;
@@ -80,33 +80,26 @@ function calculatePotVolume(diameter, height) {
 }
 
 //Function to calculate water and fertilizer recommendations
-async function calculateRecommendations(potVolume, potType, plantType, season) {
+async function calculateRecommendations(potVolume, potType, season) {
   const data = await fetchConstants();
   if (!data) return;
 
   let potdata
-  let speciesdata
   let seasondata
 
   for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "pot" && data[i].name === potType) {
+    if (data[i].datatype === "pot" && data[i].name === potType) {
       potdata = data[i]
     }
-  } 
-
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "species" && data[i].name === plantType) {
-      speciesdata = data[i]
-    }
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "season" && data[i].name === season) {
+    if (data[i].datatype === "season" && data[i].name === season) {
       seasondata = data[i]
     }
+    if (potdata && seasondata) {
+      break;
+    }
   }
- 
-  let water = potVolume * 0.0001 *potdata.datafield_1*seasondata.datafield_1
+
+  let water = potVolume * 0.0001 * potdata.datafield_1 * seasondata.datafield_1
   let fertilizer = water * seasondata.datafield_2
 
   document.getElementById('recommendedWater').textContent = `${water.toFixed(1)} liters`;
@@ -120,67 +113,67 @@ async function findRecommendations(potVolume, potType, plantType, season) {
 
   let similarCount = 0
   for (let i = 0; i < data.length; i++) {
-    if(data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season 
-      && data[i].pot_volume > (potVolume * 0.9)  && data[i].pot_volume > (potVolume * 1.1)) {
-        similarCount = similarCount + 1
+    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
+      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)) {
+      similarCount = similarCount + 1
     }
-  } 
+  }
   document.getElementById('similar').textContent = similarCount;
 
   let similarwaterCount = 0
   let similarwaterGrowthSum = 0
   let similarwaterYieldSum = 0
   for (let i = 0; i < data.length; i++) {
-    if(data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season 
-      && data[i].pot_volume > (potVolume * 0.9)  && data[i].pot_volume > (potVolume * 1.1)
-      && data[i].actual_water >  (data[i].recommented_water * 0.9) && data[i].actual_water >  (data[i].recommented_water * 1.1)) {
-        similarwaterCount = similarwaterCount + 1
-        similarwaterGrowthSum = similarwaterGrowthSum + data[i].growth_rate
-        similarwaterYieldSum = similarwaterYieldSum + data[i].crop_yield
+    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
+      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
+      && data[i].actual_water > (data[i].recommented_water * 0.9) && data[i].actual_water > (data[i].recommented_water * 1.1)) {
+      similarwaterCount = similarwaterCount + 1
+      similarwaterGrowthSum = similarwaterGrowthSum + data[i].growth_rate
+      similarwaterYieldSum = similarwaterYieldSum + data[i].crop_yield
     }
-  } 
+  }
   document.getElementById('similarwaterCount').textContent = similarwaterCount;
   document.getElementById('similarwaterGrowthAverage').textContent = similarwaterCount ? (similarwaterGrowthSum / similarwaterCount).toFixed(1) : "-";
-  document.getElementById('similarwaterYieldAverage').textContent = similarwaterCount ? (similarwaterYieldSum / similarwaterCount).toFixed(1):"-";
+  document.getElementById('similarwaterYieldAverage').textContent = similarwaterCount ? (similarwaterYieldSum / similarwaterCount).toFixed(1) : "-";
 
   let lesswaterCount = 0
   let lesswaterGrowthSum = 0
   let lesswaterYieldSum = 0
   for (let i = 0; i < data.length; i++) {
-    if(data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season 
-      && data[i].pot_volume > (potVolume * 0.9)  && data[i].pot_volume > (potVolume * 1.1)
-      && data[i].actual_water <=  (data[i].recommented_water * 0.9) ) {
-        lesswaterCount = lesswaterCount + 1
-        lesswaterGrowthSum = lesswaterGrowthSum + data[i].growth_rate
-        lesswaterYieldSum = lesswaterYieldSum + data[i].crop_yield
+    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
+      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
+      && data[i].actual_water <= (data[i].recommented_water * 0.9)) {
+      lesswaterCount = lesswaterCount + 1
+      lesswaterGrowthSum = lesswaterGrowthSum + data[i].growth_rate
+      lesswaterYieldSum = lesswaterYieldSum + data[i].crop_yield
     }
-  } 
+  }
   document.getElementById('lesswaterCount').textContent = lesswaterCount;
-  document.getElementById('lesswaterGrowthAverage').textContent = lesswaterCount ?(lesswaterGrowthSum / lesswaterCount).toFixed(1): "-";
-  document.getElementById('lesswaterYieldAverage').textContent = lesswaterCount ? (lesswaterYieldSum / lesswaterCount).toFixed(1):"-";
+  document.getElementById('lesswaterGrowthAverage').textContent = lesswaterCount ? (lesswaterGrowthSum / lesswaterCount).toFixed(1) : "-";
+  document.getElementById('lesswaterYieldAverage').textContent = lesswaterCount ? (lesswaterYieldSum / lesswaterCount).toFixed(1) : "-";
 
   let morewaterCount = 0
   let morewaterGrowthSum = 0
   let morewaterYieldSum = 0
   for (let i = 0; i < data.length; i++) {
-    if(data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season 
-      && data[i].pot_volume > (potVolume * 0.9)  && data[i].pot_volume > (potVolume * 1.1)
-      &&  data[i].actual_water >=  (data[i].recommented_water * 1.1)) {
-        morewaterCount = morewaterCount + 1
-        morewaterGrowthSum = morewaterGrowthSum + data[i].growth_rate
-        morewaterYieldSum = morewaterYieldSum + data[i].crop_yield
+    if (data[i].pot_type === potType && data[i].plant_type === plantType && data[i].time_of_year === season
+      && data[i].pot_volume > (potVolume * 0.9) && data[i].pot_volume > (potVolume * 1.1)
+      && data[i].actual_water >= (data[i].recommented_water * 1.1)) {
+      morewaterCount = morewaterCount + 1
+      morewaterGrowthSum = morewaterGrowthSum + data[i].growth_rate
+      morewaterYieldSum = morewaterYieldSum + data[i].crop_yield
     }
-  } 
+  }
   document.getElementById('morewaterCount').textContent = morewaterCount;
-  document.getElementById('morewaterGrowthAverage').textContent = morewaterCount ? (morewaterGrowthSum / morewaterCount).toFixed(1):"-";
-  document.getElementById('morewaterYieldAverage').textContent = morewaterCount ? (morewaterYieldSum / morewaterCount).toFixed(1):"-";
+  document.getElementById('morewaterGrowthAverage').textContent = morewaterCount ? (morewaterGrowthSum / morewaterCount).toFixed(1) : "-";
+  document.getElementById('morewaterYieldAverage').textContent = morewaterCount ? (morewaterYieldSum / morewaterCount).toFixed(1) : "-";
 
   let outputSection = document.getElementById("outputSection");
   outputSection.style.display = "block";
 }
 
 // Event listener for the calculate button
-document.getElementById('calculateButton').addEventListener('click', function() {
+document.getElementById('calculateButton').addEventListener('click', function () {
   const potType = document.getElementById('potType').value;
   const potDiameter = parseFloat(document.getElementById('potDiameter').value);
   const potHeight = parseFloat(document.getElementById('potHeight').value);
@@ -189,9 +182,9 @@ document.getElementById('calculateButton').addEventListener('click', function() 
 
   // Calculate pot volume (if needed in your logic)
   const potVolume = calculatePotVolume(potDiameter, potHeight);
-  document.getElementById('potSize').textContent = (potVolume/1000).toFixed(1);
+  document.getElementById('potSize').textContent = (potVolume / 1000).toFixed(1);
 
-  calculateRecommendations(potVolume, potType, plantType, season)
+  calculateRecommendations(potVolume, potType, season)
 
   // Find and display recommendations and statistics
   findRecommendations(potVolume, potType, plantType, season);
